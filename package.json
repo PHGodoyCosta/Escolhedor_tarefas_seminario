@@ -1,0 +1,18 @@
+{
+    "name": "escolhedor_de_trabalhos_seminario",
+    "version": "1.0.0",
+    "description": "Escolhedor de trabalhos para o seminário",
+    "main": "index.js",
+    "scripts": {
+        "start": "ts-node src/algoritimo.ts"
+    },
+    "author": "Pedro Henrique Godoy Costa",
+    "license": "ISC",
+    "dependencies": {
+        "@types/typescript": "^2.0.0",
+        "typescript": "^5.8.3"
+    },
+    "devDependencies": {
+        "ts-node": "^10.9.2"
+    }
+}
