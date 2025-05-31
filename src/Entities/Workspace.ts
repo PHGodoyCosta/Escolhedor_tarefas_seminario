@@ -1,7 +1,8 @@
-import { PrimaryGeneratedColumn, Entity, Column } from "typeorm";
+import { PrimaryGeneratedColumn, Entity, Column, OneToMany } from "typeorm";
+import { Job } from "./Job";
 
 @Entity('workspaces')
-class Workspace {
+export class Workspace {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -14,6 +15,7 @@ class Workspace {
         nullable: false
     })
     name: string
-}
 
-export default Workspace
+    @OneToMany(() => Job, job => job.workspace)
+    jobs: Job[];
+}
