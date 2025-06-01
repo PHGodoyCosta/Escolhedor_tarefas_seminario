@@ -13,7 +13,7 @@ export class JobberDAL {
         })
     }
 
-    getAllForJob = (job_id: number) => {
+    /*getAllForJob = (job_id: number) => {
         return new Promise(async(resolve, reject) => {
             const jobbers = await dataSource.manager
                                 .find(Jobber)
@@ -26,6 +26,41 @@ export class JobberDAL {
 
             return jobbers;
         })
+    }*/
+
+    getAllForJob = async(job_id: number) => {
+        try {
+            const jobbers = await dataSource.manager.find(Jobber)
+
+            const full_jobbers = await Promise.all(
+                jobbers.map(async(jobber) => {
+                    const { t, d } = await this.getTandD(job_id, jobber.id)
+                    return {...jobber, t, d}
+                })
+            )
+
+            return full_jobbers
+
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
+    getJobberByJob = async(job_id: number, jobber_id: number) => {
+        try {
+            const jobber = await dataSource.manager
+                                    .find(Jobber, {
+                                        where: {
+                                            id: Equal(jobber_id)
+                                        }
+                                    })
+
+            const { t, d } = await this.getTandD(job_id, jobber_id)
+            return {...jobber, t, d}
+
+        } catch (error) {
+            throw new Error(error)
+        }
     }
 
     getTandD = async(jobId: number, jobberId: number) => {

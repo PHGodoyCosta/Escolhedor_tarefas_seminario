@@ -6,10 +6,10 @@ import AlgorithimController from './Controllers/AlgorithimController';
 console.log("Eu sou o main")
 
 async function getData() {
-    const allJobbers = await JobberDAL.getAll()
+    /*const allJobbers = await JobberDAL.getAll()
     let firstJobber = allJobbers[0]
     console.log(allJobbers)
-    console.log(firstJobber.name)
+    console.log(firstJobber.name)*/
     AlgorithimController.chooseTasks(1)
 
     let t = await JobberDAL.getTandD(1, 2)

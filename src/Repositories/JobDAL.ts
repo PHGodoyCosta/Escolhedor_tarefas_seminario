@@ -12,7 +12,7 @@ export class JobDAL {
         })
     }
 
-    getByWorkspace = (workspace_id: number) => {
+    getAllByWorkspace = (workspace_id: number): Promise<Job[]> => {
         return new Promise((resolve, reject) => {
             dataSource.manager
                 .find(Job, {

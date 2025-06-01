@@ -13,6 +13,11 @@ export class Job {
     @Column()
     name: string;
 
+    @Column({
+        default: 1
+    })
+    num_jobbers: number
+
     @ManyToOne(() => Workspace, workspace => workspace.jobs, { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'workspace_id' })
     workspace: Workspace;
