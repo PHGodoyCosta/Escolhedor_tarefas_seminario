@@ -2,6 +2,7 @@ import JobberDAL from "../Repositories/JobberDAL"
 import { Job } from "../Entities/Job"
 import { Jobber } from "../Entities/Jobber"
 import JobDAL from "../Repositories/JobDAL"
+import { minWeightAssign } from 'munkres-algorithm'
 
 export type userPropertiesType = Jobber & {
     t: number,
@@ -11,6 +12,7 @@ export type userPropertiesType = Jobber & {
 class AlgorithmController {
     public PESO_T = 10
     public PESO_D = 20
+    public MAX_D = 4
 
     public shuffleArray<T>(array: T[]): T[] {
         for (let i = array.length - 1; i > 0; i--) {
@@ -35,95 +37,58 @@ class AlgorithmController {
     }
 
     public hungarianAlgorithm(costMatrix: number[][]): number[] {
-        const n = costMatrix.length;
-        const m = costMatrix[0].length;
+        const result = minWeightAssign(costMatrix)
+        const assignments = result.assignments
 
-        const u = Array(n).fill(0);
-        const v = Array(m).fill(0);
-        const p = Array(m).fill(-1);
-        const way = Array(m).fill(-1);
-
-        for (let i = 0; i < n; i++) {
-            const minv = Array(m).fill(Infinity);
-            const used = Array(m).fill(false);
-            let j0 = -1;
-            let j1 = 0;
-
-            p.fill(-1);
-            way.fill(-1);
-            const links = Array(m).fill(-1);
-            const delta = Array(m).fill(0);
-
-            let markedI = i, markedJ = -1;
-            const dist = Array(m).fill(Infinity);
-            const pre = Array(m).fill(-1);
-            used.fill(false);
-
-            for (let j = 0; j < m; j++) {
-                dist[j] = costMatrix[markedI][j] - u[markedI] - v[j];
-                way[j] = markedI;
-            }
-
-            do {
-                used[j1] = true;
-                let i0 = way[j1];
-                let delta = Infinity;
-                for (let j = 0; j < m; j++) {
-                    if (!used[j]) {
-                        const cur = costMatrix[i0][j] - u[i0] - v[j];
-                        if (cur < minv[j]) {
-                            minv[j] = cur;
-                            links[j] = j1;
-                        }
-                        if (minv[j] < delta) {
-                            delta = minv[j];
-                            j0 = j;
-                        }
-                    }
-                }
-
-                for (let j = 0; j < m; j++) {
-                    if (used[j]) {
-                        u[way[j]] += delta;
-                        v[j] -= delta;
-                    } else {
-                        minv[j] -= delta;
-                    }
-                }
-
-                j1 = j0;
-            } while (p[j1] !== -1);
-
-            do {
-                const jPrev = links[j1];
-                p[j1] = p[jPrev];
-                j1 = jPrev;
-            } while (j1 !== -1);
-        }
-
-        const result = Array(n).fill(-1);
-        for (let j = 0; j < m; j++) {
-            if (p[j] !== -1) {
-                result[p[j]] = j;
-            }
-        }
-
-        return result;
+        return assignments
     }
 
     public async buildCostMatrix(jobbers: Jobber[], jobs: Job[]): Promise<number[][]> {
         const matrix: number[][] = [];
 
-        for (const jobber of jobbers) {
-            const row: number[] = [];
+        if (jobbers > jobs) {
+            for (const jobber of jobbers) {
+                const row: number[] = [];
 
-            for (const job of jobs) {
-                const jobberForJob = await JobberDAL.getJobberByJob(job.id, jobber.id)
-                const cost = jobberForJob.t * this.PESO_T + jobberForJob.d * this.PESO_D;
-                row.push(cost);
+                for (const job of jobs) {
+                    const jobberForJob = await JobberDAL.getJobberByJob(job.id, jobber.id)
+                    const cost = jobberForJob.t * this.PESO_T + (this.MAX_D - jobberForJob.d) * this.PESO_D;
+                    row.push(cost);
+                }
+
+                const infinityQuantity = jobbers.length - jobs.length
+
+                for (let i=0;i<infinityQuantity;i++) {
+                    row.push(Infinity)
+                }
+
+                matrix.push(row);
+            }
+        } else if (jobs >= jobbers) {
+            for (const jobber of jobbers) {
+                const row: number[] = [];
+
+                for (const job of jobs) {
+                    const jobberForJob = await JobberDAL.getJobberByJob(job.id, jobber.id)
+                    const cost = jobberForJob.t * this.PESO_T + (this.MAX_D - jobberForJob.d) * this.PESO_D;
+                    row.push(cost);
+                }
+
+                matrix.push(row);
             }
 
-            matrix.push(row);
+            const infinityRowQuantity = jobs.length - jobbers.length
+
+            for (let r=0;r<infinityRowQuantity;r++) {
+                const row: number[] = [];
+
+                for (let i=0;i<jobs.length;i++) {
+                    row.push(Infinity)
+                }
+
+                matrix.push(row)
+            }
+            
         }
 
         return matrix;
@@ -146,22 +111,26 @@ class AlgorithmController {
 
     public async chooseTasks(workspace_id: number) {
         const jobs = await JobDAL.getAllByWorkspace(workspace_id)
-        //console.log(jobs)
-        //const jobbers = await JobberDAL.getAll()
+        const jobbersData = await JobberDAL.getAll() as Jobber[]
+        const jobbers = this.shuffleArray(jobbersData)
 
-        /*jobs.forEach(async(job) => {
-            const jobbers = await JobberDAL.getAllForJob(job.id)
-            console.log(jobbers)
-            console.log("===========\n\n")
-        })*/
-        //const jobbers = await JobberDAL.getAllForJob(jobs[0].id)
-        //console.log(jobbers)
-        //const jobber_ordened = this.orderList(jobbers)
-        //console.log(jobber_ordened)
-
-        const jobbers: any = await JobberDAL.getAll()
+        const jobToJobbersAssigned = []
+        const breno = await JobberDAL.getJobberByJob(1, 4)
+        console.log(breno)
         const costMatrix = await this.buildCostMatrix(jobbers, jobs)
+        console.log(costMatrix)
         const result = this.hungarianAlgorithm(costMatrix)
+
+        for (let workerIndex = 0; workerIndex < result.length; workerIndex++) {
+            const jobIndex = result[workerIndex];
+
+            if (jobIndex !== null && workerIndex < jobbers.length) {
+                const jobber = jobbers[workerIndex]; // sua lista original de jobbers
+                const job = jobs[jobIndex];          // sua lista original de trabalhos
+                console.log(`${jobber.name} → ${job.name}`);
+            }
+        }
+
         console.log(result)
 
     }

@@ -93,7 +93,11 @@ export class JobberDAL {
             let d;
 
             if (!lastRelation) {
-                d = 0;
+                d = await dataSource.manager.count(RelationJobberJob, {
+                    where: {
+                        job: {id: jobId}
+                    }
+                })
             } else {
                 d = await dataSource.manager.count(RelationJobberJob, {
                     where: {

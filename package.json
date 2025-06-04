@@ -4,12 +4,14 @@
     "description": "Escolhedor de trabalhos para o seminário",
     "main": "index.js",
     "scripts": {
-        "start": "ts-node src/index.ts"
+        "start": "ts-node src/index.ts",
+        "algo": "ts-node src/algo.ts"
     },
     "author": "Pedro Henrique Godoy Costa",
     "license": "ISC",
     "dependencies": {
         "@types/typescript": "^2.0.0",
+        "munkres-algorithm": "^1.0.2",
         "reflect-metadata": "^0.2.2",
         "sqlite3": "^5.1.7",
         "typeorm": "^0.3.24",
