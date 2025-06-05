@@ -1,6 +1,8 @@
 import { dataSource } from "../../ormconfig";
 import { Jobber } from "../Entities/Jobber";
 import { RelationJobberJob } from "../Entities/RelationJobberJob";
+import { JobberJobCycle } from "../Entities/JobberJobCycle";
+import { JobCycle } from "../Entities/JobCycle";
 import { Equal, MoreThan, Not } from "typeorm";
 
 export class JobberDAL {
@@ -57,6 +59,52 @@ export class JobberDAL {
 
             const { t, d } = await this.getTandD(job_id, jobber_id)
             return {...jobber, t, d}
+
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+    
+    getTandDRenewed = async(jobId: number, jobberId: number) => {
+        try {
+            let d;
+            let t = await dataSource
+                    .getRepository(JobberJobCycle)
+                    .createQueryBuilder("jjc")
+                    .innerJoin("jjc.cycle", "cycle")
+                    .innerJoin("cycle.job", "job")
+                    .where("jjc.jobber.id = :jobberId", { jobberId })
+                    .andWhere("job.id = :jobId", { jobId })
+                    .getCount();
+            
+            const cycles = await dataSource
+                .getRepository(JobCycle)
+                .createQueryBuilder("cycle")
+                .where("cycle.job.id = :jobId", { jobId })
+                .orderBy("cycle.date", "DESC")
+                .getMany();
+
+            for (let i = 0; i < cycles.length; i++) {
+                const participated = await dataSource
+                    .getRepository(JobberJobCycle)
+                    .createQueryBuilder("jjc")
+                    .where("jjc.cycle.id = :cycleId", { cycleId: cycles[i].id })
+                    .andWhere("jjc.jobber.id = :jobberId", { jobberId })
+                    .getCount();
+
+                if (participated > 0) {
+                    d = i
+                }
+            }
+
+            if (!d) {
+                d = cycles.length
+            }
+
+            return {
+                t: t,
+                d: d
+            }
 
         } catch (error) {
             throw new Error(error)

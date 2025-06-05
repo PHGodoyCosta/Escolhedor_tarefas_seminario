@@ -3,6 +3,9 @@ import { Job } from "../Entities/Job"
 import { Jobber } from "../Entities/Jobber"
 import JobDAL from "../Repositories/JobDAL"
 import { minWeightAssign } from 'munkres-algorithm'
+import RelationJobberJobDAL from "../Repositories/RelationJobberJobDAL"
+import JobCycleDAL from "../Repositories/JobCycleDAL"
+import JobberJobCycleDAL from "../Repositories/JobberJobCycleDAL"
 
 export type userPropertiesType = Jobber & {
     t: number,
@@ -20,6 +23,18 @@ class AlgorithmController {
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
+    }
+
+    public insertMatches(result: any) {
+        Object.keys(result).map(async(job_id: string) => {
+            const cycle: any = await JobCycleDAL.insert(Number(job_id))
+            const cycleId = cycle.identifiers[0].id
+
+            result[job_id].map(async(jobber_id: number) => {
+                await JobberJobCycleDAL.insert(Number(jobber_id), cycleId)
+                await RelationJobberJobDAL.insert(Number(job_id), jobber_id)
+            })
+        })
     }
 
     public orderingJobToJobbers(jobs: Job[]) {
@@ -46,7 +61,7 @@ class AlgorithmController {
     public async buildCostMatrix(jobbers: Jobber[], jobs: Job[]): Promise<number[][]> {
         const matrix: number[][] = [];
 
-        if (jobbers > jobs) {
+        if (jobbers.length > jobs.length) {
             for (const jobber of jobbers) {
                 const row: number[] = [];
 
@@ -64,7 +79,7 @@ class AlgorithmController {
 
                 matrix.push(row);
             }
-        } else if (jobs >= jobbers) {
+        } else if (jobs.length >= jobbers.length) {
             for (const jobber of jobbers) {
                 const row: number[] = [];
 
@@ -105,33 +120,54 @@ class AlgorithmController {
         return list
     }
 
-    public async makeMatrix(task_id: number) {
-
-    }
-
     public async chooseTasks(workspace_id: number) {
-        const jobs = await JobDAL.getAllByWorkspace(workspace_id)
+        let jobs = await JobDAL.getAllByWorkspace(workspace_id)
         const jobbersData = await JobberDAL.getAll() as Jobber[]
-        const jobbers = this.shuffleArray(jobbersData)
+        let jobbers = jobbersData
+        //console.log(jobbers)
+        //let jobbers = this.shuffleArray(jobbersData)
 
-        const jobToJobbersAssigned = []
+        const jobToJobbersAssigned = {}
         const breno = await JobberDAL.getJobberByJob(1, 4)
-        console.log(breno)
-        const costMatrix = await this.buildCostMatrix(jobbers, jobs)
-        console.log(costMatrix)
-        const result = this.hungarianAlgorithm(costMatrix)
+        const res = await JobberDAL.getTandDRenewed(1, 2)
+        console.log(res)
+        //console.log(breno)
 
-        for (let workerIndex = 0; workerIndex < result.length; workerIndex++) {
-            const jobIndex = result[workerIndex];
+        /*while (jobs.length > 0) {
+            const costMatrix = await this.buildCostMatrix(jobbers, jobs)
+            console.log(costMatrix)
+            const result = this.hungarianAlgorithm(costMatrix)
 
-            if (jobIndex !== null && workerIndex < jobbers.length) {
-                const jobber = jobbers[workerIndex]; // sua lista original de jobbers
-                const job = jobs[jobIndex];          // sua lista original de trabalhos
-                console.log(`${jobber.name} → ${job.name}`);
+            console.log(result)
+
+            for (let workerIndex = 0; workerIndex < result.length; workerIndex++) {
+                const jobIndex = result[workerIndex];
+
+                if (jobIndex !== null && workerIndex < jobbers.length) {
+                    const jobber = jobbers[workerIndex]; // sua lista original de jobbers
+                    const job = jobs[jobIndex];          // sua lista original de trabalhos
+
+                    if (jobber != undefined && job != undefined) {
+                        if (job.id in jobToJobbersAssigned) {
+                            jobToJobbersAssigned[job.id].push(jobber.id)
+                        } else {
+                            jobToJobbersAssigned[job.id] = [jobber.id]
+                        }
+
+                        if (jobToJobbersAssigned[job.id].length == job.num_jobbers) {
+                            jobs = jobs.filter(jobFilter => jobFilter.id !== job.id)
+                        }
+
+                        jobbers = jobbers.filter(jobberFilter => jobberFilter.id !== jobber.id)
+
+                        console.log(`${jobber.name} → ${job.name}`);
+                    }
+                }
             }
         }
 
-        console.log(result)
+        console.log(jobToJobbersAssigned)
+        this.insertMatches(jobToJobbersAssigned)*/
 
     }
 }

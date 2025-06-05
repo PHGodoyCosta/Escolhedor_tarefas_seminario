@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Workspace } from './Workspace';
 import { RelationJobberJob } from './RelationJobberJob';
+import { JobCycle } from './JobCycle';
 
 @Entity('jobs')
 export class Job {
@@ -24,4 +25,8 @@ export class Job {
 
     @OneToMany(() => RelationJobberJob, relation => relation.job)
     relations: RelationJobberJob[];
+
+    @OneToMany(() => JobCycle, cycle => cycle.job)
+    cycles: JobCycle[]
+
 }

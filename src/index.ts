@@ -13,7 +13,7 @@ async function getData() {
     AlgorithimController.chooseTasks(1)
 
     let t = await JobberDAL.getTandD(1, 2)
-    console.log(t)
+    //console.log(t)
 
 }
 
