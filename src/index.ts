@@ -12,7 +12,7 @@ async function getData() {
     console.log(firstJobber.name)*/
     AlgorithimController.chooseTasks(1)
 
-    let t = await JobberDAL.getTandD(1, 2)
+    let t = await JobberDAL.getTandD(1, 9)
     //console.log(t)
 
 }

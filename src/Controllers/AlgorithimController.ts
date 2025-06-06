@@ -67,15 +67,20 @@ class AlgorithmController {
 
                 for (const job of jobs) {
                     const jobberForJob = await JobberDAL.getJobberByJob(job.id, jobber.id)
-                    const cost = jobberForJob.t * this.PESO_T + (this.MAX_D - jobberForJob.d) * this.PESO_D;
+                    let cost = jobberForJob.t * this.PESO_T + (this.MAX_D - jobberForJob.d) * this.PESO_D;
+
+                    if (jobberForJob.d == 0) {
+                        cost = Number.MAX_SAFE_INTEGER
+                    }
+
                     row.push(cost);
                 }
 
-                const infinityQuantity = jobbers.length - jobs.length
+                /*const infinityQuantity = jobbers.length - jobs.length
 
                 for (let i=0;i<infinityQuantity;i++) {
                     row.push(Infinity)
-                }
+                }*/
 
                 matrix.push(row);
             }
@@ -92,7 +97,7 @@ class AlgorithmController {
                 matrix.push(row);
             }
 
-            const infinityRowQuantity = jobs.length - jobbers.length
+            /*const infinityRowQuantity = jobs.length - jobbers.length
 
             for (let r=0;r<infinityRowQuantity;r++) {
                 const row: number[] = [];
@@ -102,7 +107,7 @@ class AlgorithmController {
                 }
 
                 matrix.push(row)
-            }
+            }*/
             
         }
 
@@ -120,6 +125,21 @@ class AlgorithmController {
         return list
     }
 
+    public async veriyResults(result: any) {
+        Object.keys(result).map(async(job_id: string) => {
+            result[job_id].map(async(jobber_id: number) => {
+                const jobberVariables = await JobberDAL.getTandD(Number(job_id), jobber_id)
+                console.log(jobberVariables)
+
+                if (jobberVariables.d === 0) {
+                    return false
+                }
+            })
+        })
+
+        return true
+    }
+
     public async chooseTasks(workspace_id: number) {
         let jobs = await JobDAL.getAllByWorkspace(workspace_id)
         const jobbersData = await JobberDAL.getAll() as Jobber[]
@@ -129,11 +149,9 @@ class AlgorithmController {
 
         const jobToJobbersAssigned = {}
         const breno = await JobberDAL.getJobberByJob(1, 4)
-        const res = await JobberDAL.getTandDRenewed(1, 2)
-        console.log(res)
         //console.log(breno)
 
-        /*while (jobs.length > 0) {
+        while (jobs.length > 0) {
             const costMatrix = await this.buildCostMatrix(jobbers, jobs)
             console.log(costMatrix)
             const result = this.hungarianAlgorithm(costMatrix)
@@ -167,7 +185,9 @@ class AlgorithmController {
         }
 
         console.log(jobToJobbersAssigned)
-        this.insertMatches(jobToJobbersAssigned)*/
+        const check = this.veriyResults(jobToJobbersAssigned)
+        console.log(check)
+        this.insertMatches(jobToJobbersAssigned)
 
     }
 }

@@ -64,8 +64,8 @@ export class JobberDAL {
             throw new Error(error)
         }
     }
-    
-    getTandDRenewed = async(jobId: number, jobberId: number) => {
+
+    getTandD = async(jobId: number, jobberId: number) => {
         try {
             let d;
             let t = await dataSource
@@ -83,22 +83,32 @@ export class JobberDAL {
                 .where("cycle.job.id = :jobId", { jobId })
                 .orderBy("cycle.date", "DESC")
                 .getMany();
+            
+            //console.log(cycles)
 
-            for (let i = 0; i < cycles.length; i++) {
-                const participated = await dataSource
+            for (let i=0;i<cycles.length;i++) {
+                const lastParticipation = await dataSource
                     .getRepository(JobberJobCycle)
                     .createQueryBuilder("jjc")
-                    .where("jjc.cycle.id = :cycleId", { cycleId: cycles[i].id })
-                    .andWhere("jjc.jobber.id = :jobberId", { jobberId })
+                    .where("jjc.cycleId = :cycleId", { cycleId: cycles[i].id })
+                    .andWhere("jjc.jobberId = :jobberId", { jobberId })
+                    .orderBy("jjc.date", "DESC") // ou outro campo de data
                     .getCount();
+                
+                //console.log(lastParticipation)
 
-                if (participated > 0) {
+                if (lastParticipation > 0) {
                     d = i
+                    break
                 }
             }
 
-            if (!d) {
-                d = cycles.length
+            if (d == undefined) {
+                if (cycles.length > 0) {
+                    d = cycles.length
+                } else {
+                    d = 4
+                }
             }
 
             return {
@@ -110,8 +120,9 @@ export class JobberDAL {
             throw new Error(error)
         }
     }
+    
 
-    getTandD = async(jobId: number, jobberId: number) => {
+    /*getTandD = async(jobId: number, jobberId: number) => {
         try {
             let t = await dataSource.manager.count(RelationJobberJob, {
                 where: {
@@ -166,7 +177,7 @@ export class JobberDAL {
         } catch (error) {
             throw new Error(error)
         }
-    }
+    }*/
 }
 
 export default new JobberDAL()

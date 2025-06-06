@@ -7,10 +7,10 @@ import { maxWeightAssign, minWeightAssign } from 'munkres-algorithm'
 ])*/
 
 const result = minWeightAssign([
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0]
+    [10, 20, 2340, 40, 234],
+    [2034, 943, 50, 50, 100],
+    [2034, 943, 50, 50, 100],
+    [2034, 943, 50, 50, 100]
 ])
 
 const assignments = result.assignments  // <- é uma função
