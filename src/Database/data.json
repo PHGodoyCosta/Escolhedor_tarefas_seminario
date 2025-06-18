@@ -1,0 +1,35 @@
+{
+    "jobbers": [
+        {
+            "id": "cbf94215-519d-4219-9d95-3d1a1767100b",
+            "name": "Breno Texeira"
+        },
+        {
+            "id": "3de9205d-2144-4475-9f05-0d0f50114357",
+            "name": "Pedro Godoy"
+        }
+    ],
+
+    "workspaces": [
+        {
+            "name": "Trabalhos Internos",
+            "jobs": [
+                {
+                    "name": "Cozinha",
+                    "jobbers": [
+                        {
+                            "name": "Breno Texeira",
+                            "t": 0,
+                            "d": 0
+                        },
+                        {
+                            "name": "Pedro Godoy",
+                            "t": 0,
+                            "d": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
