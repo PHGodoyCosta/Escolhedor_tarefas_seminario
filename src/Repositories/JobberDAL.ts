@@ -15,6 +15,19 @@ export class JobberDAL {
         })
     }
 
+    getById = (id: number) => {
+        return new Promise(async(resolve, reject) => {
+            dataSource.manager
+                .findOne(Jobber, {
+                    where: {
+                        id: Equal(id)
+                    }
+                })
+                .then((data: any) => resolve(data))
+                .catch((err: Error) => reject(err))
+        })
+    }
+
     /*getAllForJob = (job_id: number) => {
         return new Promise(async(resolve, reject) => {
             const jobbers = await dataSource.manager

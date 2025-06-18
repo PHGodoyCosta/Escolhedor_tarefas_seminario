@@ -12,6 +12,19 @@ export class JobDAL {
         })
     }
 
+    getById = (id: number) => {
+        return new Promise((resolve, reject) => {
+            dataSource.manager
+                .findOne(Job, {
+                    where: {
+                        id: Equal(id)
+                    }
+                })
+                .then((data: any) => resolve(data))
+                .catch((err: Error) => reject(err))
+        })
+    }
+
     getAllByWorkspace = (workspace_id: number): Promise<Job[]> => {
         return new Promise((resolve, reject) => {
             dataSource.manager
