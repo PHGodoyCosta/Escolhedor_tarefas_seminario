@@ -1,5 +1,5 @@
 import { RelationJobberJob } from "../Entities/RelationJobberJob"
-import { dataSource } from "../../ormconfig"
+import { dataSource } from "../ormconfig"
 
 export class RelationJobberJobDAL {
     insert = (job_id: number, jobber_id: number) => {

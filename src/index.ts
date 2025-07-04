@@ -1,26 +1,45 @@
-import 'reflect-metadata';
-import { dataSource } from '../ormconfig';
-import JobberDAL from './Repositories/JobberDAL';
-import AlgorithimController from './Controllers/AlgorithimController';
+import { app, BrowserWindow } from 'electron'
+import { config } from 'dotenv'
+import path from 'path'
 
-console.log("Eu sou o main")
+config()
 
-async function getData() {
-    /*const allJobbers = await JobberDAL.getAll()
-    let firstJobber = allJobbers[0]
-    console.log(allJobbers)
-    console.log(firstJobber.name)*/
-    AlgorithimController.chooseTasks(1)
+let mainWindow: BrowserWindow 
 
-    let t = await JobberDAL.getTandD(1, 9)
-    //console.log(t)
+function createWindow() {
+    mainWindow = new BrowserWindow({
+        width: 1200,
+        height: 800,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            preload: path.join(__dirname, 'preload.js')
+        }
+    })
 
+    if (process.env.NODE_ENV === 'development') {
+        mainWindow.loadURL('http://localhost:3000');
+        mainWindow.webContents.openDevTools();
+    } else {
+        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    }
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
 }
 
-dataSource.initialize()
-    .then(async () => {
-        console.log('📦 Banco conectado com sucesso!');
-        await getData()
-    // Aqui você pode executar seeders ou iniciar um servidor, etc.
-    })
-    .catch((error) => console.error('Erro ao conectar banco:', error));
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    if (mainWindow === null) {
+        createWindow();
+    }
+})
+

@@ -1,4 +1,4 @@
-import { dataSource } from "../../ormconfig"
+import { dataSource } from "../ormconfig"
 import { Workspace } from "../Entities/Workspace"
 import { Equal } from "typeorm"
 

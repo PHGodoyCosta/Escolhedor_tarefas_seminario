@@ -1,11 +1,26 @@
-import { minWeightAssign } from "munkres-algorithm";
+import 'reflect-metadata';
+import { dataSource } from './ormconfig';
+import JobberDAL from './Repositories/JobberDAL';
+import AlgorithimController from './Controllers/AlgorithimController';
 
-const result = minWeightAssign([
-    [10, 20, 2340, 40, 234],
-    [2034, 943, 50, 50, 100],
-    [2034, 943, 50, 50, 100],
-    [2034, 943, 50, 50, 100],
-    [2034, 943, 50, 50, 100]
-])
+console.log("Eu sou o main")
 
-console.log(result)
+async function getData() {
+    /*const allJobbers = await JobberDAL.getAll()
+    let firstJobber = allJobbers[0]
+    console.log(allJobbers)
+    console.log(firstJobber.name)*/
+    AlgorithimController.chooseTasks(1)
+
+    let t = await JobberDAL.getTandD(1, 9)
+    //console.log(t)
+
+}
+
+dataSource.initialize()
+    .then(async () => {
+        console.log('📦 Banco conectado com sucesso!');
+        await getData()
+    // Aqui você pode executar seeders ou iniciar um servidor, etc.
+    })
+    .catch((error) => console.error('Erro ao conectar banco:', error));

@@ -1,5 +1,5 @@
 import { JobberJobCycle } from "../Entities/JobberJobCycle";
-import { dataSource } from "../../ormconfig";
+import { dataSource } from "../ormconfig";
 import { Equal } from "typeorm";
 
 export class JobberJobCycleDAL {

@@ -2,22 +2,36 @@
     "name": "escolhedor_de_trabalhos_seminario",
     "version": "1.0.0",
     "description": "Escolhedor de trabalhos para o seminário",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
-        "start": "ts-node src/index.ts",
-        "algo": "ts-node src/algo.ts"
+        "start": "npm run build && electron dist/index.js",
+        "_comment": "electron --no-warnings --loader ts-node ./src/index.ts",
+        "dev": "vite",
+        "dev:electron": "ts-node src/index.ts",
+        "build": "tsc",
+        "build:react": "vite build",
+        "algo": "ts-node src/algoritimo.ts"
     },
     "author": "Pedro Henrique Godoy Costa",
     "license": "ISC",
     "dependencies": {
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
         "@types/typescript": "^2.0.0",
+        "dotenv": "^17.0.1",
         "munkres-algorithm": "^1.0.2",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
         "reflect-metadata": "^0.2.2",
         "sqlite3": "^5.1.7",
         "typeorm": "^0.3.24",
         "typescript": "^5.8.3"
     },
     "devDependencies": {
-        "ts-node": "^10.9.2"
+        "@vitejs/plugin-react": "^4.5.2",
+        "electron": "^36.5.0",
+        "electron-builder": "^26.0.12",
+        "ts-node": "^10.9.2",
+        "vite": "^6.3.5"
     }
 }

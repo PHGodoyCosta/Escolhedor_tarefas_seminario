@@ -1,4 +1,4 @@
-import { dataSource } from "../../ormconfig";
+import { dataSource } from "../ormconfig";
 import { Jobber } from "../Entities/Jobber";
 import { RelationJobberJob } from "../Entities/RelationJobberJob";
 import { JobberJobCycle } from "../Entities/JobberJobCycle";

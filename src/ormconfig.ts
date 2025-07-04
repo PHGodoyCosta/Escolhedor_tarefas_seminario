@@ -1,11 +1,11 @@
 import { DataSource } from 'typeorm';
 import path from 'path'
-import { Jobber } from './src/Entities/Jobber';
-import { Job } from './src/Entities/Job';
-import { Workspace } from './src/Entities/Workspace';
-import { RelationJobberJob } from './src/Entities/RelationJobberJob';
-import { JobberJobCycle } from './src/Entities/JobberJobCycle';
-import { JobCycle } from './src/Entities/JobCycle';
+import { Jobber } from './Entities/Jobber';
+import { Job } from './Entities/Job';
+import { Workspace } from './Entities/Workspace';
+import { RelationJobberJob } from './Entities/RelationJobberJob';
+import { JobberJobCycle } from './Entities/JobberJobCycle';
+import { JobCycle } from './Entities/JobCycle';
 
 export const dataSource = new DataSource({
     type: 'sqlite',
