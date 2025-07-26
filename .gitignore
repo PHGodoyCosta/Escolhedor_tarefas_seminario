@@ -1,5 +1,4 @@
 node_modules/
 database.db
-algo.ts
-algoritimo.ts
 dist/
+.env

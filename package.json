@@ -4,13 +4,10 @@
     "description": "Escolhedor de trabalhos para o seminário",
     "main": "dist/index.js",
     "scripts": {
-        "start": "npm run build && electron dist/index.js",
-        "_comment": "electron --no-warnings --loader ts-node ./src/index.ts",
-        "dev": "vite",
-        "dev:electron": "ts-node src/index.ts",
+        "dev": "ts-node src/index.ts",
+        "start": "node dist/index.js",
         "build": "tsc",
-        "build:react": "vite build",
-        "algo": "ts-node src/algoritimo.ts"
+        "build:react": "vite build"
     },
     "author": "Pedro Henrique Godoy Costa",
     "license": "ISC",
