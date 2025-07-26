@@ -10,7 +10,7 @@
         "build:react": "vite build"
     },
     "author": "Pedro Henrique Godoy Costa",
-    "license": "ISC",
+    "license": "Apache-2.0",
     "dependencies": {
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
