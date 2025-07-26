@@ -1,14 +1,13 @@
 {
     "name": "escolhedor_de_trabalhos_seminario",
     "version": "1.0.0",
-    "description": "Escolhedor de trabalhos para o seminário",
-    "main": "index.js",
+    "description": "Escolhedor que escolhe distribui para o seminário de X trabalhadores para Y trabalhos",
+    "main": "src/index.ts",
     "scripts": {
-        "start": "ts-node src/index.ts",
-        "algo": "ts-node src/algo.ts"
+        "start": "ts-node src/index.ts"
     },
     "author": "Pedro Henrique Godoy Costa",
-    "license": "ISC",
+    "license": "Apache License 2.0",
     "dependencies": {
         "@types/typescript": "^2.0.0",
         "munkres-algorithm": "^1.0.2",
