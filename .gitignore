@@ -1,4 +1,5 @@
 node_modules/
 database.db
+*.db
 dist/
 .env

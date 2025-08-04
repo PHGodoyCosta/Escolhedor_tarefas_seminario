@@ -31,6 +31,9 @@ export class JobDAL {
                 .find(Job, {
                     where: {
                         workspace: Equal(workspace_id)
+                    },
+                    order: {
+                        sort_order: "ASC"
                     }
                 })
                 .then((data: any) => resolve(data))

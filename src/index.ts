@@ -4,7 +4,7 @@ import JobberDAL from './Repositories/JobberDAL';
 import AlgorithimController from './Controllers/AlgorithimController';
 
 async function getData() {
-    AlgorithimController.chooseTasks(1)
+    AlgorithimController.chooseTasks(3)
 }
 
 dataSource.initialize()

@@ -19,6 +19,9 @@ export class Job {
     })
     num_jobbers: number
 
+    @Column()
+    sort_order: number
+
     @ManyToOne(() => Workspace, workspace => workspace.jobs, { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'workspace_id' })
     workspace: Workspace;
