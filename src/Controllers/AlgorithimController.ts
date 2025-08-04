@@ -12,7 +12,7 @@ export type userPropertiesType = Jobber & {
     d: number
 }
 
-type Assignments = Record<number, number[]>;
+export type Assignments = Record<number, number[]>;
 
 class AlgorithmController {
     public PESO_T = 10
@@ -237,10 +237,10 @@ class AlgorithmController {
 
         while (jobs.length > 0) {
             const costMatrix = await this.buildCostMatrix(jobbers, jobs)
-            console.log(costMatrix)
+            //console.log(costMatrix)
             const result = this.hungarianAlgorithm(costMatrix)
 
-            console.log(result)
+            //console.log(result)
 
             for (let workerIndex = 0; workerIndex < result.length; workerIndex++) {
                 const jobIndex = result[workerIndex];
@@ -264,27 +264,29 @@ class AlgorithmController {
 
                         const confirmRelation = await JobberDAL.getTandD(job.id, jobber.id)
 
-                        console.log(`${jobber.name} → ${job.name}`);
-                        console.log(confirmRelation)
+                        //console.log(`${jobber.name} → ${job.name}`);
+                        //console.log(confirmRelation)
                     }
                 }
             }
         }
 
-        console.log(this.jobToJobbersAssigned)
+        //console.log(this.jobToJobbersAssigned)
         //const check = await this.verifyResults(this.jobToJobbersAssigned)
-        console.log("Checkando função")
-        const test = await this.fixInvalidAssignments(this.jobToJobbersAssigned)
-        console.log(test)
-        console.log("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=")
-        this.showingResult(test)
+        //console.log("Checkando função")
+        const fixedInvalidAssignments = await this.fixInvalidAssignments(this.jobToJobbersAssigned)
+        //console.log(fixedInvalidAssignments)
+        //console.log("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=")
+        //this.showingResult(fixedInvalidAssignments)
     
         /*while (!await this.verifyResults(jobToJobbersAssigned)) {
             await this.chooseTasks(1)
         }*/
         setTimeout(() => {
-            this.insertMatches(test)
+            this.insertMatches(fixedInvalidAssignments)
         }, 200)
+
+        return fixedInvalidAssignments
 
     }
 }
