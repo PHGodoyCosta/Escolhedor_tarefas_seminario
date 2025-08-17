@@ -6,6 +6,7 @@ import { minWeightAssign } from 'munkres-algorithm'
 import RelationJobberJobDAL from "../Repositories/RelationJobberJobDAL"
 import JobCycleDAL from "../Repositories/JobCycleDAL"
 import JobberJobCycleDAL from "../Repositories/JobberJobCycleDAL"
+import readline from "node:readline"
 
 export type userPropertiesType = Jobber & {
     t: number,
@@ -283,7 +284,15 @@ class AlgorithmController {
             await this.chooseTasks(1)
         }*/
         setTimeout(() => {
-            this.insertMatches(fixedInvalidAssignments)
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+            });
+
+            rl.question(`Salvar no banco? `, () => {
+                this.insertMatches(fixedInvalidAssignments)
+                rl.close();
+            });
         }, 200)
 
         return fixedInvalidAssignments
